@@ -2,7 +2,7 @@ import json
 from pprint import pprint
 from models import Comic
 
-with open("./data/data.mvpref", "r", encoding='utf-8') as file:
+with open("data/data.mvpref", "r", encoding='utf-8') as file:
     data = json.load(file)
 
 recent_list = data["recent"]
