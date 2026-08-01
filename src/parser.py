@@ -1,14 +1,14 @@
 import json
-from pprint import pprint
-from models import Comic
+
+from .models import Comic
 
 def load_comics():
     with open("data/data.mvpref", "r", encoding='utf-8') as file:
         data = json.load(file)
 
-    recent_list = data["recent"]
-    bookmark_dict = data["bookmark"]
-    bookmark2_dict = data["bookmark2"]
+    recent_list = data["recent"] # list of comic dataset
+    bookmark_dict = data["bookmark"] # old bookmark list - migrated
+    bookmark2_dict = data["bookmark2"] # new bookmark list
 
     comics = []
 
@@ -23,7 +23,7 @@ def load_comics():
         )
         comics.append(comic)
 
-    for item in comics:
+    for item in comics: # find and save ref_id from bookmark and bookmark2
         key = f"{item.base_mode}.{item.id}"
         ref = bookmark_dict.get(key)
         if ref is None:
@@ -31,9 +31,3 @@ def load_comics():
         item.ref_id = ref
 
     return comics
-
-# test code
-#pprint(comics[:5])
-
-#none_count = sum(1 for c in comics if c.ref_id is None)
-#print(f"{none_count} / {len(comics)}")
