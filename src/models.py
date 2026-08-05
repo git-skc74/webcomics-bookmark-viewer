@@ -40,9 +40,9 @@ class ComicTableModel(QAbstractTableModel):
         if role == Qt.ToolTipRole: # tooltip popup for long content
             comic = self.comics[index.row()]
     
-            if index.column() == 1:
+            if index.column() == 1: # title
                 return comic.name
-            if index.column() == 3:
+            if index.column() == 3: # tags
                 return ", ".join(comic.tags) if comic.tags else "N/A"
         return None
 

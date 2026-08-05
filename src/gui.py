@@ -6,6 +6,7 @@ from PySide6.QtWidgets import QApplication, QHeaderView, QGridLayout, QHBoxLayou
 class MainWindow(QMainWindow):
     def __init__(self, model):
         super().__init__()
+
         self.proxy = model
 
         self.setupUi()
@@ -13,40 +14,12 @@ class MainWindow(QMainWindow):
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
 
+        # layout
         layout = QVBoxLayout()
 
-        text = QLabel("Bookmark Viewer")
-
-
-        total_count = len(model.sourceModel().comics)
-        unread_count = self.proxy.sourceModel().unread_count()
-        read_count = total_count - unread_count
-        
-        ui_layout = QHBoxLayout()
-
-        # total count, read count / unread count.
-        count = QLabel(f"Total: {total_count} ({read_count} read / {unread_count} unread)")
-
-        # button to unsort items
-        unsort_button = QPushButton("Unsort")
-        unsort_button.clicked.connect(self.set_unsort_button)
-
-
-        ui_layout.addWidget(count)
-        #ui_layout.addWidget(unread_label)
-        ui_layout.addWidget(unsort_button)
-
-        self.table = QTableView()
-        self.table.setModel(model)
-        self.table.resizeColumnsToContents()
-
-        self.table.setColumnWidth(1, 200)
-        self.table.setColumnWidth(3, 200)
-        self.table.setSortingEnabled(True)
-
-        layout.addWidget(text)
-        layout.addLayout(ui_layout)
-        layout.addWidget(self.table)
+        layout.addWidget(self.set_title_label())
+        layout.addLayout(self.set_top_bar())
+        layout.addWidget(self.set_table())
 
         main_widget.setLayout(layout)
 
@@ -56,6 +29,55 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(800,600)
 
         #self.center_on_screen()
+    
+    def set_title_label(self):
+        title_label = QLabel("Bookmark Viewer")
+
+        title_font = title_label.font()
+        title_font.setBold(True)
+        title_font.setPointSize(16)
+
+        title_label.setFont(title_font)
+
+        return title_label
+
+    def set_top_bar(self):
+        top_bar_layout = QHBoxLayout()
+        
+        total_count = len(self.proxy.sourceModel().comics)
+        unread_count = self.proxy.sourceModel().unread_count()
+        read_count = total_count - unread_count
+        
+        # total count, read count / unread count
+        count_label = QLabel(f"Total: {total_count} ({read_count} read / {unread_count} unread)")
+        
+        top_bar_layout.addWidget(count_label)
+        top_bar_layout.addWidget(self.set_unsort_button())
+
+        return top_bar_layout
+
+    def set_table(self):
+        self.table = QTableView()
+        self.table.setModel(self.proxy)
+        self.table.resizeColumnsToContents()
+        
+        self.table.setColumnWidth(1, 200)
+        self.table.setColumnWidth(3, 200)
+
+        self.table.setSortingEnabled(True)
+        self.proxy.sort(-1) # default is unsorted list
+
+        return self.table
+
+    def set_unsort_button(self):
+        # button to unsort items
+        unsort_button = QPushButton("Unsort")
+        unsort_button.clicked.connect(self.on_unsort_clicked)
+
+        return unsort_button
+
+    def on_unsort_clicked(self):
+        self.proxy.sort(-1) # unsort
 
     def center_on_screen(self):
         screen = QApplication.primaryScreen().geometry()
@@ -67,9 +89,6 @@ class MainWindow(QMainWindow):
 
         self.move(x, y)
 
-    def set_unsort_button(self):
-        self.proxy.sort(-1) # unsort
-
     #def set_text_box(self):
     #self.line_edit = QLineEdit(self)
     #self.line_edit.setPlaceholderText("Enter text here")
@@ -78,13 +97,6 @@ class MainWindow(QMainWindow):
     def text_changed(self):
         text = self.line_edit.text()
         print(text)
-
-    def setSortButton(self):
-        button = QPushButton("Sort by title")
-        button.setCheckable(True)
-        button.clicked.connect(self.the_button_was_clicked)
-
-        self.setCentralWidget(button)
 
     def cell_clicked(self, row, column):
         print(row, column)
