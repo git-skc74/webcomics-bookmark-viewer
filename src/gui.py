@@ -19,6 +19,7 @@ class MainWindow(QMainWindow):
 
         layout.addWidget(self.set_title_label())
         layout.addLayout(self.set_top_bar())
+        layout.addWidget(self.set_search_bar())
         layout.addWidget(self.set_table())
 
         main_widget.setLayout(layout)
@@ -43,18 +44,39 @@ class MainWindow(QMainWindow):
 
     def set_top_bar(self):
         top_bar_layout = QHBoxLayout()
+
+        self.count_label = QLabel()
+        self.update_count_label()
         
-        total_count = len(self.proxy.sourceModel().comics)
-        unread_count = self.proxy.sourceModel().unread_count()
-        read_count = total_count - unread_count
-        
-        # total count, read count / unread count
-        count_label = QLabel(f"Total: {total_count} ({read_count} read / {unread_count} unread)")
-        
-        top_bar_layout.addWidget(count_label)
+        top_bar_layout.addWidget(self.count_label)
         top_bar_layout.addWidget(self.set_unsort_button())
 
         return top_bar_layout
+
+    def update_count_label(self):
+        total_count = len(self.proxy.sourceModel().comics)
+        visible_count = self.proxy.rowCount() # visible count after filter
+        unread_count = self.proxy.sourceModel().unread_count()
+        read_count = total_count - unread_count
+
+        if visible_count != total_count: # filtered
+            self.count_label.setText(f"Showing {visible_count} ({read_count} read / {unread_count} unread)")
+        else: # unfiltered
+            self.count_label.setText(f"Total: {total_count} ({read_count} read / {unread_count} unread)")
+        
+    def set_search_bar(self):
+        search_bar = QLineEdit()
+        search_bar.setPlaceholderText("Search...")
+        search_bar.textChanged.connect(self.update_filter)
+
+        self.proxy.setFilterKeyColumn(1) # title
+        self.proxy.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive) # disable case-sensitivity
+        
+        return search_bar
+    
+    def update_filter(self, text):
+        self.proxy.setFilterFixedString(text)
+        self.update_count_label() # show filtered label
 
     def set_table(self):
         self.table = QTableView()
