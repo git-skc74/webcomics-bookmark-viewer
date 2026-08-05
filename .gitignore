@@ -220,3 +220,4 @@ __marimo__/
 # Personal bookmark folder
 data/*
 !data/.gitkeep
+src/test.md

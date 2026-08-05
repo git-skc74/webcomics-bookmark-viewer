@@ -7,7 +7,7 @@ def load_comics():
         data = json.load(file)
 
     recent_list = data["recent"] # list of comic dataset
-    bookmark_dict = data["bookmark"] # old bookmark list - migrated
+    bookmark_dict = data["bookmark"] # old bookmark list - migrated (no matching comic data)
     bookmark2_dict = data["bookmark2"] # new bookmark list
 
     comics = []

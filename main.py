@@ -3,7 +3,7 @@ from src.models import ComicTableModel
 from src.gui import MainWindow
 
 import sys
-from PySide6.QtCore import QModelIndex, Qt
+from PySide6.QtCore import QModelIndex, QSortFilterProxyModel, Qt
 from PySide6.QtWidgets import QApplication
 
 def main():
@@ -17,8 +17,14 @@ def main():
     #print(len(comics))
     model = ComicTableModel(comics) # get model using comics list data
 
+    #print(dir(model)) # test
+
+    # proxy model - for sorting
+    proxy = QSortFilterProxyModel() # setup proxy
+    proxy.setSourceModel(model) # connect model to proxy
+
     # create main window
-    window = MainWindow(model)
+    window = MainWindow(proxy)
     window.show()
 
     sys.exit(app.exec()) # exit when return exitcode

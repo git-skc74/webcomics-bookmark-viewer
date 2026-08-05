@@ -63,4 +63,7 @@ class ComicTableModel(QAbstractTableModel):
                 return section + 1 # return index + 1
 
         return None
-    
+
+    def unread_count(self):
+        unread = sum(comic.ref_id is None for comic in self.comics)
+        return unread
