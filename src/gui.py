@@ -2,6 +2,7 @@ import sys
 
 from PySide6.QtCore import QAbstractTableModel, QSize, Qt
 from PySide6.QtWidgets import QApplication, QHeaderView, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QTableView, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
+from PySide6.QtGui import QIcon
 
 class MainWindow(QMainWindow):
     def __init__(self, model):
@@ -26,7 +27,8 @@ class MainWindow(QMainWindow):
 
     def setupUi(self):
         self.setWindowTitle("Webcomic Bookmark Viewer")
-        
+        self.setWindowIcon(QIcon("assets/icons/app_icon.ico"))
+
         DEFAULT_WINDOW_SIZE = QSize(800,600)
         self.resize(DEFAULT_WINDOW_SIZE)
         self.setMinimumSize(DEFAULT_WINDOW_SIZE)
