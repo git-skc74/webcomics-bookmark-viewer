@@ -17,21 +17,21 @@ class MainWindow(QMainWindow):
         # layout
         layout = QVBoxLayout()
 
-        layout.addWidget(self.set_title_label())
-        layout.addLayout(self.set_top_bar())
-        layout.addWidget(self.set_search_bar())
-        layout.addWidget(self.set_table())
+        layout.addWidget(self.create_title_label())
+        layout.addLayout(self.create_top_bar())
+        layout.addLayout(self.create_search_layout())
+        layout.addWidget(self.create_table())
 
         main_widget.setLayout(layout)
 
     def setupUi(self):
         self.setWindowTitle("Webcomic Bookmark Viewer")
-        self.resize(QSize(800,600))
-        self.setMinimumSize(800,600)
-
-        #self.center_on_screen()
+        
+        DEFAULT_WINDOW_SIZE = QSize(800,600)
+        self.resize(DEFAULT_WINDOW_SIZE)
+        self.setMinimumSize(DEFAULT_WINDOW_SIZE)
     
-    def set_title_label(self):
+    def create_title_label(self):
         title_label = QLabel("Bookmark Viewer")
 
         title_font = title_label.font()
@@ -42,14 +42,14 @@ class MainWindow(QMainWindow):
 
         return title_label
 
-    def set_top_bar(self):
+    def create_top_bar(self):
         top_bar_layout = QHBoxLayout()
 
         self.count_label = QLabel()
         self.update_count_label()
         
         top_bar_layout.addWidget(self.count_label)
-        top_bar_layout.addWidget(self.set_unsort_button())
+        top_bar_layout.addWidget(self.create_unsort_button())
 
         return top_bar_layout
 
@@ -60,38 +60,56 @@ class MainWindow(QMainWindow):
         read_count = total_count - unread_count
 
         if visible_count != total_count: # filtered
-            self.count_label.setText(f"Showing {visible_count} ({read_count} read / {unread_count} unread)")
+            self.count_label.setText(f"Showing {visible_count}"
+                                     f"({read_count} read / {unread_count} unread)")
         else: # unfiltered
-            self.count_label.setText(f"Total: {total_count} ({read_count} read / {unread_count} unread)")
+            self.count_label.setText(f"Total: {total_count}"
+                                     f"({read_count} read / {unread_count} unread)")
         
-    def set_search_bar(self):
-        search_bar = QLineEdit()
-        search_bar.setPlaceholderText("Search...")
-        search_bar.textChanged.connect(self.update_filter)
+    def create_search_layout(self):
+        search_layout = QHBoxLayout()
+
+        self.search_bar = QLineEdit()
+        self.search_bar.setPlaceholderText("Search...")
+        self.search_bar.textChanged.connect(self.update_filter) # update filter for every text change
 
         self.proxy.setFilterKeyColumn(1) # title
         self.proxy.setFilterCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive) # disable case-sensitivity
+
+        search_layout.addWidget(self.search_bar)
+        search_layout.addWidget(self.create_clear_button())
         
-        return search_bar
+        return search_layout
+
+    def create_clear_button(self):
+        # button to clear search bar
+        clear_button = QPushButton("Clear")
+        clear_button.clicked.connect(self.on_clear_clicked)
+
+        return clear_button
     
+    def on_clear_clicked(self):
+        self.search_bar.clear() # trigger textChanged -> update_filter
+
     def update_filter(self, text):
         self.proxy.setFilterFixedString(text)
         self.update_count_label() # show filtered label
 
-    def set_table(self):
+    def create_table(self):
         self.table = QTableView()
         self.table.setModel(self.proxy)
         self.table.resizeColumnsToContents()
-        
-        self.table.setColumnWidth(1, 200)
-        self.table.setColumnWidth(3, 200)
 
-        self.table.setSortingEnabled(True)
+        # resize column width for long content
+        self.table.setColumnWidth(1, 200) # title
+        self.table.setColumnWidth(3, 200) # tags
+
+        self.table.setSortingEnabled(True) # enable sorting
         self.proxy.sort(-1) # default is unsorted list
 
         return self.table
 
-    def set_unsort_button(self):
+    def create_unsort_button(self):
         # button to unsort items
         unsort_button = QPushButton("Unsort")
         unsort_button.clicked.connect(self.on_unsort_clicked)
