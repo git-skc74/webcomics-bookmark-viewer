@@ -19,6 +19,7 @@ def load_comics():
             id=item.get("id"),
             name=item.get("name"),
             tags=item.get("tags"),
+            release=item.get("release"),
             ref_id=None,
         )
         comics.append(comic)

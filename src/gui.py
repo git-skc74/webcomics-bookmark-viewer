@@ -1,7 +1,7 @@
 import sys
 
 from PySide6.QtCore import QAbstractTableModel, QSize, Qt
-from PySide6.QtWidgets import QApplication, QHeaderView, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QTableView, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QHeaderView, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QSizePolicy, QTableView, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from PySide6.QtGui import QIcon
 
 class MainWindow(QMainWindow):
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.create_title_label())
         layout.addLayout(self.create_top_bar())
         layout.addLayout(self.create_search_layout())
-        layout.addWidget(self.create_table())
+        layout.addWidget(self.create_table(), stretch=1)
 
         main_widget.setLayout(layout)
 
@@ -105,6 +105,10 @@ class MainWindow(QMainWindow):
         # resize column width for long content
         self.table.setColumnWidth(1, 200) # title
         self.table.setColumnWidth(3, 200) # tags
+
+        #self.table.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        #self.table.horizontalHeader().setStretchLastSection(True)
+        #self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         self.table.setSortingEnabled(True) # enable sorting
         self.proxy.sort(-1) # default is unsorted list
