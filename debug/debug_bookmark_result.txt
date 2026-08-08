@@ -1,0 +1,75 @@
+=== Bookmark Debug ===
+recent:    1137
+bookmark:  4652
+bookmark2: 704
+
+recent ∩ bookmark2: 704
+
+=== bookmark2 -> ref_id ===
+ref_id count: 704
+
+ref_id ∩ bookmark: 454
+
+=== MATCHED ===
+manga=1.8794432 | ref_id=1.13317741 | position=1
+manga=2.40638322 | ref_id=2.55514578 | position=33
+manga=2.53824290 | ref_id=2.53824426 | position=1
+manga=2.18861021 | ref_id=2.25788062 | position=111
+manga=2.32588429 | ref_id=2.32620797 | position=14
+manga=2.15032560 | ref_id=2.26197112 | position=119
+manga=1.176730 | ref_id=1.176732 | position=1
+manga=2.83208 | ref_id=2.84815 | position=1
+manga=2.33682205 | ref_id=2.33685953 | position=1
+manga=1.16643005 | ref_id=1.23431826 | position=1
+manga=1.12183459 | ref_id=1.15690534 | position=1
+manga=1.6644477 | ref_id=1.13612567 | position=2
+manga=2.12657426 | ref_id=2.54306674 | position=1
+manga=2.37167173 | ref_id=2.37169617 | position=8
+manga=1.12127413 | ref_id=1.13637247 | position=20
+manga=1.526342 | ref_id=1.13752723 | position=1
+manga=1.1020570 | ref_id=1.12858117 | position=1
+manga=2.24251 | ref_id=2.30254241 | position=125
+manga=1.531884 | ref_id=1.15444516 | position=1
+manga=1.13144560 | ref_id=1.14799989 | position=1
+manga=2.833804 | ref_id=2.842315 | position=1
+manga=2.19869897 | ref_id=2.36592513 | position=101
+manga=1.10514415 | ref_id=1.10759872 | position=10
+manga=2.43069298 | ref_id=2.43069922 | position=148
+manga=2.23146098 | ref_id=2.31355449 | position=133
+manga=2.15912570 | ref_id=2.15913452 | position=1
+manga=1.2466192 | ref_id=1.11095296 | position=6
+manga=2.16963971 | ref_id=2.16964058 | position=1
+manga=1.14501219 | ref_id=1.14502308 | position=1
+manga=1.6446950 | ref_id=1.6446954 | position=3
+
+=== NOT MATCHED (first 30) ===
+manga=2.9978896 | ref_id=2.43009314
+manga=1.5654922 | ref_id=1.14998079
+manga=1.471328 | ref_id=1.17551113
+manga=2.10617496 | ref_id=2.24354917
+manga=2.26538497 | ref_id=2.28418184
+manga=2.34149321 | ref_id=2.38379497
+manga=1.13586565 | ref_id=1.13606800
+manga=2.32712825 | ref_id=2.37427013
+manga=2.20313705 | ref_id=2.30757857
+manga=1.221747 | ref_id=1.13549053
+manga=1.13157721 | ref_id=1.15061442
+manga=2.38509797 | ref_id=2.38560789
+manga=1.170944 | ref_id=1.15477978
+manga=1.169726 | ref_id=1.15225929
+manga=1.1847260 | ref_id=1.13719579
+manga=2.22250466 | ref_id=2.34632529
+manga=1.7400795 | ref_id=1.15369770
+manga=1.8573469 | ref_id=1.16888905
+manga=2.21801990 | ref_id=2.25586855
+manga=2.37121985 | ref_id=2.37226069
+manga=1.1846962 | ref_id=1.2410070
+manga=1.14221799 | ref_id=1.14222399
+manga=2.26087 | ref_id=2.26313
+manga=2.4780491 | ref_id=2.27660996
+manga=2.83178 | ref_id=2.84643
+manga=2.28402737 | ref_id=2.48331842
+manga=2.36627353 | ref_id=2.45555826
+manga=2.25788497 | ref_id=2.25788956
+manga=1.11596272 | ref_id=1.13572087
+manga=2.22963980 | ref_id=2.36241141
