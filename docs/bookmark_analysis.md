@@ -61,3 +61,9 @@ Not:
 ```
 recent (comic_id) -> bookmark
 ```
+
+## Known Data Limitations
+   Some titles in `recent` were already truncated (ending in "...")
+   by the original app before being saved to the bookmark file.
+   Since the original service is discontinued, these titles cannot
+   be recovered in full.
