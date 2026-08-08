@@ -9,7 +9,8 @@ class Comic:
     name: str
     tags: list[str]
     release: str
-    ref_id: int | None
+    episode_id: int | None
+    page_id: int | None
 
 class ComicTableModel(QAbstractTableModel):
     def __init__(self, comics):
@@ -20,7 +21,7 @@ class ComicTableModel(QAbstractTableModel):
         return len(self.comics)
 
     def columnCount(self, parent):
-        return 7
+        return 8
 
     def data(self, index, role):
         if role == Qt.DisplayRole:
@@ -35,7 +36,8 @@ class ComicTableModel(QAbstractTableModel):
                 ", ".join(comic.tags) if comic.tags else "",    # 3 - tags (list to string)
                 comic.release,                                  # 4 - release: ongoing (weekly/biweekly/monthly) or complete
                 comic.id,                                       # 5 - comic id
-                comic.ref_id,                                   # 6 - reference id (episode id)
+                comic.episode_id,                               # 6 - episode id
+                comic.page_id                                   # 7 - page number/position
             ]
             return content[column]
 
@@ -58,7 +60,8 @@ class ComicTableModel(QAbstractTableModel):
                     "Tags",
                     "Release",
                     "Comic ID",
-                    "Reference ID",
+                    "Episode ID",
+                    "Page Number/Position"
                 ]
                 return headers[section]
 
@@ -68,5 +71,5 @@ class ComicTableModel(QAbstractTableModel):
         return None
 
     def unread_count(self):
-        unread = sum(comic.ref_id is None for comic in self.comics)
+        unread = sum(comic.episode_id is None for comic in self.comics)
         return unread

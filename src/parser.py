@@ -6,9 +6,9 @@ def load_comics():
     with open("data/data.mvpref", "r", encoding='utf-8') as file:
         data = json.load(file)
 
-    recent_list = data["recent"] # list of comic dataset
-    bookmark_dict = data["bookmark"] # old bookmark list - migrated (no matching comic data)
-    bookmark2_dict = data["bookmark2"] # new bookmark list
+    recent_list = data["recent"]        # list of comic dataset
+    bookmark_dict = data["bookmark"]    # page number/position
+    bookmark2_dict = data["bookmark2"]  # last viewed episode IDs
 
     comics = []
 
@@ -20,15 +20,24 @@ def load_comics():
             name=item.get("name"),
             tags=item.get("tags"),
             release=item.get("release"),
-            ref_id=None,
+            episode_id=None,
+            page_id=None,
         )
         comics.append(comic)
 
-    for item in comics: # find and save ref_id from bookmark and bookmark2
+    for item in comics: # find and save ref_id from bookmark2
         key = f"{item.base_mode}.{item.id}"
+        ref = bookmark2_dict.get(key)
+        item.episode_id = ref 
+
+    count = 0
+    for item in comics:
+        key = f"{item.base_mode}.{item.episode_id}"
         ref = bookmark_dict.get(key)
-        if ref is None:
-            ref = bookmark2_dict.get(key)
-        item.ref_id = ref
+        if ref:
+            count += 1
+        item.page_id = ref
+
+    print(count)
 
     return comics
