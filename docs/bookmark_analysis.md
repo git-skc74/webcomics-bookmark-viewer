@@ -63,7 +63,10 @@ recent (comic_id) -> bookmark
 ```
 
 ## Known Data Limitations
-   Some titles in `recent` were already truncated (ending in "...")
-   by the original app before being saved to the bookmark file.
-   Since the original service is discontinued, these titles cannot
-   be recovered in full.
+
+While building the detail panel, I noticed some titles in `recent` appeared to be cut off, ending in "...". At first, this looked like a UI rendering bug (label eliding due to insufficient layout space), but after adjusting fonts and size policies with no change, I traced it back to the source data itself.
+
+The original app appears to have truncated long titles for its own list view, and that already-truncated string was what got saved into
+the bookmark file.
+
+**Workaround**: the "Search Comic Online" button lets you look up the comic by its (possibly truncated) title, which is usually enough for search engines to surface the correct result.
