@@ -30,14 +30,9 @@ def load_comics():
         ref = bookmark2_dict.get(key)
         item.episode_id = ref 
 
-    count = 0
     for item in comics:
         key = f"{item.base_mode}.{item.episode_id}"
         ref = bookmark_dict.get(key)
-        if ref:
-            count += 1
         item.page_id = ref
-
-    print(count)
 
     return comics

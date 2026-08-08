@@ -1,14 +1,18 @@
 import sys
+import urllib.parse
+import webbrowser
 
 from PySide6.QtCore import QAbstractTableModel, QSize, Qt
 from PySide6.QtWidgets import QApplication, QFrame, QHeaderView, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QSizePolicy, QTableView, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from PySide6.QtGui import QIcon
+
 
 class MainWindow(QMainWindow):
     def __init__(self, model):
         super().__init__()
 
         self.proxy = model
+        self.current_comic = None
 
         self.setupUi()
 
@@ -115,13 +119,7 @@ class MainWindow(QMainWindow):
     def create_table(self):
         self.table = QTableView()
         self.table.setModel(self.proxy)
-        #self.table.resizeColumnsToContents()
 
-        # resize column width for long content
-        #self.table.setColumnWidth(1, 200) # title
-        #self.table.setColumnWidth(3, 200) # tags
-
-        #self.table.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         #self.table.horizontalHeader().setStretchLastSection(True)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
@@ -136,31 +134,27 @@ class MainWindow(QMainWindow):
         frame = QFrame()
         frame.setFrameShape(QFrame.Shape.Box)
         frame.setFrameShadow(QFrame.Shadow.Sunken)
-        #frame.setFixedWidth(300)
 
         panel_layout = QVBoxLayout()
 
-        self.comic_title_label = QLabel()
-        self.comic_title_label.setWordWrap(True)
-        self.comic_author_label = QLabel()
-        self.comic_tags_label = QLabel()
-        self.comic_tags_label.setWordWrap(True)
-        self.comic_release_label = QLabel()
-        self.comic_type_label = QLabel()
-        self.comic_id_label = QLabel()
-        self.comic_episode_label = QLabel()
-        self.comic_page_label = QLabel()
+        self.info_labels = { # Dictionary {key:value}, accessed through key
+            "title": QLabel(),
+            "author": QLabel(),
+            "type": QLabel(),
+            "tags": QLabel(),
+            "comic_id": QLabel(),
+            "episode_id": QLabel(),
+            "page_id": QLabel(),
+            "release": QLabel(),
+        }
 
-        panel_layout.addWidget(QLabel("Comic Details"))
+        self.info_labels["title"].setWordWrap(True)
+        self.info_labels["tags"].setWordWrap(True)
 
-        panel_layout.addWidget(self.comic_title_label)
-        panel_layout.addWidget(self.comic_author_label)
-        panel_layout.addWidget(self.comic_type_label)
-        panel_layout.addWidget(self.comic_tags_label)
-        panel_layout.addWidget(self.comic_id_label)
-        panel_layout.addWidget(self.comic_episode_label)
-        panel_layout.addWidget(self.comic_page_label)
-        panel_layout.addWidget(self.comic_release_label)
+        for label in self.info_labels.values():
+            panel_layout.addWidget(label)
+
+        panel_layout.addWidget(self.create_search_online_button())
 
         frame.setLayout(panel_layout)
 
@@ -178,15 +172,32 @@ class MainWindow(QMainWindow):
         self.current_comic = comic
         self.update_info_panel(comic)
 
+    def _format(self, value, fallback="unknown"):
+        return str(value) if value else fallback
+
     def update_info_panel(self, comic):
-        self.comic_title_label.setText("Title: " + comic.name)
-        self.comic_author_label.setText("Author: " + (comic.author if comic.author else "unknown"))
-        self.comic_tags_label.setText("Tags: " + (", ".join("#" + tag for tag in comic.tags) if comic.tags else "None")) # put hashtag + join
-        self.comic_type_label.setText("Type: " + ("Manga" if comic.base_mode == 1 else "Webtoon"))
-        self.comic_release_label.setText("Status: " + (comic.release if comic.release else "unknown"))
-        self.comic_id_label.setText("Comic ID: " + (str(comic.id) if comic.id else "unknown"))
-        self.comic_episode_label.setText("Last Viewed: " + (str(comic.episode_id) if comic.episode_id else "unread"))
-        self.comic_page_label.setText("Last Page Number/Position: " + str(comic.page_id if comic.page_id else "no data"))
+        self.info_labels["title"].setText("Title: " + comic.name)
+        self.info_labels["author"].setText("Author: " + self._format(comic.author))
+        self.info_labels["tags"].setText("Tags: " + self._format(", ".join(f"#{tag}" for tag in comic.tags), "None")) # put hashtag + join
+        self.info_labels["type"].setText("Type: " + ("Manga" if comic.base_mode == 1 else "Webtoon"))
+        self.info_labels["comic_id"].setText("Comic ID: " + self._format(comic.id))
+        self.info_labels["episode_id"].setText("Last Viewed: " + self._format(comic.episode_id, "unread"))
+        self.info_labels["page_id"].setText("Last Page Number/Position: " + self._format(comic.page_id, "no data"))
+        self.info_labels["release"].setText("Status: " + self._format(comic.release))
+
+    def create_search_online_button(self):
+         search_online_button = QPushButton("Search Comic Online")
+         search_online_button.clicked.connect(self.on_search_online_clicked)
+
+         return search_online_button
+    
+    def on_search_online_clicked(self):
+        if self.current_comic is None: # no comic selected yet
+            return
+        
+        query = urllib.parse.quote(self.current_comic.name)
+        url = f"https://www.google.com/search?q={query}"
+        webbrowser.open(url)
 
     def center_on_screen(self):
         screen = QApplication.primaryScreen().geometry()
@@ -197,11 +208,6 @@ class MainWindow(QMainWindow):
         y = (screen.height() - window_size.height()) // 2
 
         self.move(x, y)
-
-    #def set_text_box(self):
-    #self.line_edit = QLineEdit(self)
-    #self.line_edit.setPlaceholderText("Enter text here")
-    #self.line_edit.returnPressed.connect(self.text_changed) 
     
     def text_changed(self):
         text = self.line_edit.text()
