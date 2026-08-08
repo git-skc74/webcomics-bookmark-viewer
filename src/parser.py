@@ -18,7 +18,7 @@ def load_comics():
             base_mode=item.get("baseMode"),
             id=item.get("id"),
             name=item.get("name"),
-            tags=item.get("tags"),
+            tags=item.get("tags") or [],
             release=item.get("release"),
             episode_id=None,
             page_id=None,
@@ -34,5 +34,5 @@ def load_comics():
         key = f"{item.base_mode}.{item.episode_id}"
         ref = bookmark_dict.get(key)
         item.page_id = ref
-
+    
     return comics
