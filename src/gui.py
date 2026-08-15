@@ -158,6 +158,10 @@ class MainWindow(QMainWindow):
         self.table = QTableView()
         self.table.setModel(self.proxy)
 
+        # block vertical resizing
+        vertical_header = self.table.verticalHeader()
+        vertical_header.setSectionResizeMode(QHeaderView.Fixed)
+
         # hide all except for title and author
         self.table.hideColumn(0)  # type
         self.table.hideColumn(3)  # tag
@@ -238,6 +242,7 @@ class MainWindow(QMainWindow):
 
     def create_search_online_button(self):
          search_online_button = QPushButton("Search Comic Online")
+         search_online_button.setIcon(QIcon("assets/icons/search_online.svg"))
          search_online_button.clicked.connect(self.on_search_online_clicked)
 
          return search_online_button
