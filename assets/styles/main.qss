@@ -15,10 +15,7 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #2f6bb0;
 }
-QLabel {
-    background-color: #fafafa
-}
-QLineEdit {
+#searchBar {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 6px;

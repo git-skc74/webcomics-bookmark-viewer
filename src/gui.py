@@ -88,6 +88,7 @@ class MainWindow(QMainWindow):
 
         self.search_bar = QLineEdit()
         self.search_bar.setPlaceholderText("Search...")
+        self.search_bar.setObjectName("searchBar")
 
         self.create_search_actions()
 
@@ -121,6 +122,7 @@ class MainWindow(QMainWindow):
             self.search_bar
         )
 
+        # trigger textChanged -> update_filter
         clear_action.triggered.connect(self.search_bar.clear) # clear search bar
 
         self.search_bar.addAction(
@@ -132,16 +134,16 @@ class MainWindow(QMainWindow):
         self.proxy.setFilterFixedString(text)
         self.update_count_label() # show filtered label
 
-    def create_clear_button(self):
-        # button to clear search bar
-        clear_button = QPushButton("Clear")
-        clear_button.setIcon(QIcon("assets/icons/clear.svg"))
-        clear_button.clicked.connect(self.on_clear_clicked)
+    def create_unsort_button(self):
+        # button to unsort items
+        unsort_button = QPushButton("Unsort")
+        unsort_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        unsort_button.clicked.connect(self.on_unsort_clicked)
 
-        return clear_button
-    
-    def on_clear_clicked(self):
-        self.search_bar.clear() # trigger textChanged -> update_filter
+        return unsort_button
+
+    def on_unsort_clicked(self):
+        self.proxy.sort(-1) # unsort
 
     def create_table(self):
         self.table = QTableView()
@@ -246,7 +248,7 @@ class MainWindow(QMainWindow):
          return search_online_button
     
     def on_search_online_clicked(self):
-        if self.current_comic is None: # no comic selected yet
+        if self.current_comic is None: # no comic selected
             return
         
         query = urllib.parse.quote(self.current_comic.name)
@@ -262,10 +264,6 @@ class MainWindow(QMainWindow):
         y = (screen.height() - window_size.height()) // 2
 
         self.move(x, y)
-    
-    def text_changed(self):
-        text = self.line_edit.text()
-        print(text)
 
     def cell_clicked(self, row, column):
         print(row, column)
