@@ -30,11 +30,10 @@ QTableView {
 }
 QHeaderView::section {
     background-color: #f0f0f0;
-    padding: 6px;
     border: none;
     font-weight: 600;
 }
-QFrame {
+#detailsFrame {
     background-color: white;
     border-radius: 8px;
 }

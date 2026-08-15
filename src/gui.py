@@ -3,7 +3,7 @@ import urllib.parse
 import webbrowser
 
 from PySide6.QtCore import QAbstractTableModel, QSize, Qt
-from PySide6.QtWidgets import QApplication, QFrame, QHeaderView, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QSizePolicy, QTableView, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QAbstractItemView, QApplication, QFrame, QHeaderView, QGridLayout, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QPushButton, QSizePolicy, QTableView, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from PySide6.QtGui import QAction, QIcon
 
 
@@ -82,17 +82,6 @@ class MainWindow(QMainWindow):
         else: # unfiltered
             self.count_label.setText(f"Total: {total_count} "
                                      f"({read_count} read / {unread_count} unread)")
-
-    def create_unsort_button(self):
-        # button to unsort items
-        unsort_button = QPushButton("Unsort")
-        unsort_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        unsort_button.clicked.connect(self.on_unsort_clicked)
-
-        return unsort_button
-
-    def on_unsort_clicked(self):
-        self.proxy.sort(-1) # unsort
         
     def create_search_layout(self):
         search_layout = QHBoxLayout()
@@ -132,7 +121,7 @@ class MainWindow(QMainWindow):
             self.search_bar
         )
 
-        clear_action.triggered.connect(self.search_bar.clear)
+        clear_action.triggered.connect(self.search_bar.clear) # clear search bar
 
         self.search_bar.addAction(
             clear_action,
@@ -162,6 +151,16 @@ class MainWindow(QMainWindow):
         vertical_header = self.table.verticalHeader()
         vertical_header.setSectionResizeMode(QHeaderView.Fixed)
 
+        # select row instead of content
+        self.table.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
+
+        # block multiple selection
+        self.table.setSelectionMode(
+            QAbstractItemView.SelectionMode.SingleSelection
+        )
+
         # hide all except for title and author
         self.table.hideColumn(0)  # type
         self.table.hideColumn(3)  # tag
@@ -182,8 +181,7 @@ class MainWindow(QMainWindow):
         self.table.selectionModel().currentRowChanged.connect(self.on_row_selected)
 
         frame = QFrame()
-        frame.setFrameShape(QFrame.Shape.Box)
-        frame.setFrameShadow(QFrame.Shadow.Sunken)
+        frame.setObjectName("detailsFrame")
 
         panel_layout = QVBoxLayout()
 
