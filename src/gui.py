@@ -66,6 +66,7 @@ class MainWindow(QMainWindow):
         self.update_count_label()
         
         top_bar_layout.addWidget(self.count_label)
+        #top_bar_layout.addWidget(self.create_filter())
         top_bar_layout.addWidget(self.create_unsort_button())
 
         return top_bar_layout
@@ -82,7 +83,10 @@ class MainWindow(QMainWindow):
         else: # unfiltered
             self.count_label.setText(f"Total: {total_count} "
                                      f"({read_count} read / {unread_count} unread)")
+
+    #def create_filter(self):
         
+          
     def create_search_layout(self):
         search_layout = QHBoxLayout()
 
@@ -187,6 +191,11 @@ class MainWindow(QMainWindow):
 
         panel_layout = QVBoxLayout()
 
+        # placeholder cover for detail panel
+        cover_placeholder = QLabel("No Cover")
+        cover_placeholder.setObjectName("coverLabel")
+        cover_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
         self.info_labels = { # Dictionary {key:value}, accessed through key
             "title": QLabel(),
             "author": QLabel(),
@@ -205,6 +214,8 @@ class MainWindow(QMainWindow):
 
         self.info_labels["title"].setWordWrap(True)
         self.info_labels["tags"].setWordWrap(True)
+
+        panel_layout.addWidget(cover_placeholder)
 
         for label in self.info_labels.values():
             panel_layout.addWidget(label)
@@ -232,11 +243,11 @@ class MainWindow(QMainWindow):
 
     def update_info_panel(self, comic):
         self.info_labels["title"].setText(comic.name)
-        self.info_labels["author"].setText("Author: " + self._format(comic.author))
+        self.info_labels["author"].setText("Author\n" + self._format(comic.author))
         self.info_labels["tags"].setText("Tags: " + self._format(", ".join(f"#{tag}" for tag in comic.tags), "None")) # put hashtag + join
         self.info_labels["type"].setText("Type: " + ("Manga" if comic.base_mode == 1 else "Webtoon"))
         self.info_labels["comic_id"].setText("Comic ID: " + self._format(comic.id))
-        self.info_labels["episode_id"].setText("Last Viewed: " + self._format(comic.episode_id, "unread"))
+        self.info_labels["episode_id"].setText("Last Episode ID: " + self._format(comic.episode_id, "unread"))
         self.info_labels["page_id"].setText("Viewer Position: " + self._format(comic.page_id, "no data"))
         self.info_labels["release"].setText("Status: " + self._format(comic.release))
 

@@ -34,3 +34,8 @@ QHeaderView::section {
     background-color: white;
     border-radius: 8px;
 }
+#coverLabel {
+    background-color: #eeeeee;
+    color: #888888;
+    border-radius: 8px;
+}
