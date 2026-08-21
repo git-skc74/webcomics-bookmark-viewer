@@ -34,6 +34,9 @@ class MainWindow(QMainWindow):
 
         main_widget.setLayout(layout)
 
+        # default screen when nothing selected
+        self.show_default_panel()
+
     def setupUi(self):
         self.setWindowTitle("Webcomic Bookmark Viewer")
         self.setWindowIcon(QIcon("assets/icons/app_icon.ico"))
@@ -135,8 +138,14 @@ class MainWindow(QMainWindow):
         )
 
     def update_filter(self, text):
+        self.table.clearSelection()
+        self.table.selectionModel().clearCurrentIndex()
+
         self.proxy.setFilterFixedString(text)
         self.update_count_label() # show filtered label
+
+        self.current_comic = None
+        self.show_default_panel()
 
     def create_unsort_button(self):
         # button to unsort items
@@ -192,10 +201,10 @@ class MainWindow(QMainWindow):
         panel_layout = QVBoxLayout()
 
         # placeholder cover for detail panel
-        cover_placeholder = QLabel("No Cover")
-        cover_placeholder.setObjectName("coverLabel")
-        cover_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+        cover_label = QLabel("No Cover")
+        cover_label.setObjectName("coverLabel")
+        cover_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
         self.info_labels = { # Dictionary {key:value}, accessed through key
             "title": QLabel(),
             "author": QLabel(),
@@ -215,7 +224,7 @@ class MainWindow(QMainWindow):
         self.info_labels["title"].setWordWrap(True)
         self.info_labels["tags"].setWordWrap(True)
 
-        panel_layout.addWidget(cover_placeholder)
+        panel_layout.addWidget(cover_label)
 
         for label in self.info_labels.values():
             panel_layout.addWidget(label)
@@ -225,11 +234,21 @@ class MainWindow(QMainWindow):
         frame.setLayout(panel_layout)
 
         return frame
+
+    def show_default_panel(self):
+        self.info_labels["title"].setText("Select a comic to view details")
+        for key, label in self.info_labels.items():
+            if key != "title":
+                label.setText("")
         
+        self.search_online_button.setEnabled(False)
+  
     # QModelIndex
     # current = currently selected index / previous = previously selected index
     def on_row_selected(self, current, previous):
         if not current.isValid():
+            self.current_comic = None
+            self.show_default_panel()
             return
 
         source_index = self.proxy.mapToSource(current) # getting source index using current proxy index
@@ -251,12 +270,16 @@ class MainWindow(QMainWindow):
         self.info_labels["page_id"].setText("Viewer Position: " + self._format(comic.page_id, "no data"))
         self.info_labels["release"].setText("Status: " + self._format(comic.release))
 
-    def create_search_online_button(self):
-         search_online_button = QPushButton("Search Comic Online")
-         search_online_button.setIcon(QIcon("assets/icons/search_online.svg"))
-         search_online_button.clicked.connect(self.on_search_online_clicked)
+        self.search_online_button.setEnabled(True)
 
-         return search_online_button
+    def create_search_online_button(self):
+        self.search_online_button = QPushButton("Search Comic Online")
+        self.search_online_button.setObjectName("searchOnlineButton")
+        self.search_online_button.setIcon(QIcon("assets/icons/search_online.svg"))
+        self.search_online_button.clicked.connect(self.on_search_online_clicked)
+        self.search_online_button.setEnabled(False) # initially disabled - no comic selected
+
+        return self.search_online_button
     
     def on_search_online_clicked(self):
         if self.current_comic is None: # no comic selected
