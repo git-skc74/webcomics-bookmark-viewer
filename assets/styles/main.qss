@@ -39,3 +39,6 @@ QHeaderView::section {
     color: #888888;
     border-radius: 8px;
 }
+#searchOnlineButton:disabled {
+    background-color: #888888;
+}
