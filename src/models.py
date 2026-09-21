@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from PySide6.QtCore import QAbstractTableModel, Qt
+from PySide6.QtCore import QAbstractTableModel, QSortFilterProxyModel, Qt
 
 @dataclass
 class Comic:
@@ -11,6 +11,15 @@ class Comic:
     release: str
     episode_id: int | None
     page_id: int | None
+
+class ComicFilterProxyModel(QSortFilterProxyModel):
+    def __init__(self):
+        self.search_text = ""
+        self.type_filter = "All"
+        self.read_filter = "All"
+
+    #def set_search_text
+
 
 class ComicTableModel(QAbstractTableModel):
     def __init__(self, comics):
